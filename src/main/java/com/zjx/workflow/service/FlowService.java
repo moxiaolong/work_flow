@@ -49,10 +49,10 @@ public class FlowService {
         instance.setNode(flowChain.getStartNode());
         instance.setStatus(InstanceStatus.PROCESSING);
         instanceRepository.saveAndFlush(instance);
-        if (instance.getNode().getAutoProceed()) {
-            activateTask(instance, null);
-        }
         log.info("开启#{} 流,实例ID#{}", flowChain.getName(), instance.getId());
+        if (instance.getNode().getAutoProceed()) {
+            activateTask(instance.getId(), null);
+        }
         return instance.getId();
 
     }
@@ -102,6 +102,8 @@ public class FlowService {
         }
 
         log.info("激活流,实例ID#{},当前参数#{}", instance.getId(), oldSource);
+        Boolean isDeleted = instance.getIsDeleted();
+        System.out.println(isDeleted);
         instance.activate();
     }
 

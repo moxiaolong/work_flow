@@ -9,8 +9,10 @@ import com.zjx.workflow.entity.node.Node;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
+import org.springframework.util.StringUtils;
 
 import java.io.IOException;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -31,8 +33,13 @@ public class BranchHandler extends Handler {
         Node currentNode = instance.getNode();
         String sourceJson = instance.getSourceJson();
         try {
-            Map<String, String> sourceMap = objectMapper.readValue(sourceJson, new TypeReference<Map<String, String>>() {
-            });
+            Map<String, String> sourceMap;
+            if (StringUtils.isEmpty(sourceJson)) {
+                sourceMap = new HashMap<>(0);
+            } else {
+                sourceMap = objectMapper.readValue(sourceJson, new TypeReference<Map<String, String>>() {
+                });
+            }
 
             List<Conditions> conditions = currentNode.getConditions();
             for (Conditions condition : conditions) {

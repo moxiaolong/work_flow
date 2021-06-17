@@ -32,6 +32,9 @@ public class HandlerRepository implements ApplicationContextAware {
     public static Handler getHandler(Node node) {
         NodeType type = node.getType();
         String businessHandlerClassName = node.getBusinessHandlerClassName();
+        if (type == null) {
+            return applicationContext.getBean(DefaultHandler.class);
+        }
         switch (type) {
             case BUSINESS:
                 try {

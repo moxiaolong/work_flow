@@ -60,16 +60,17 @@ public abstract class Handler {
      * @param instance
      */
     public void complete(Instance instance, Node nextNode) {
+        log.info("处理结束,实例ID#{},节点ID#{},处理器#{}", instance.getNode().getId(), instance.getId(), this.getClass().getSimpleName());
+
         HistoryRecord historyRecord = new HistoryRecord();
         historyRecord.setCurrentNode(instance.getNode());
         /*
           如果下节点为空 标记状态为完成
          */
-        if (nextNode != null) {
-            instance.setNode(nextNode);
-        } else {
+        if (nextNode == null) {
             instance.setStatus(InstanceStatus.FINISH);
         }
+        instance.setNode(nextNode);
 
         instanceRepository.saveAndFlush(instance);
 
@@ -81,7 +82,6 @@ public abstract class Handler {
         historyRecord.setSourceJson(instance.getSourceJson());
         historyRecordRepository.save(historyRecord);
 
-        log.info("处理结束,实例ID#{},处理器#{}", instance.getId(), this.getClass().getSimpleName());
 
         /*
           如果下节点自动，继续向下执行

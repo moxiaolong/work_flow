@@ -14,6 +14,6 @@ import org.springframework.stereotype.Component;
 public class FinishHandler extends Handler {
     @Override
     public void onHandle(Instance instance) {
-         complete(instance);
+         complete(instance,null);
     }
 }

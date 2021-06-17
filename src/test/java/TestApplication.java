@@ -13,6 +13,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.mock.web.MockServletContext;
 import org.springframework.test.context.junit4.SpringRunner;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.context.ContextLoader;
 import org.springframework.web.context.ContextLoaderListener;
 
@@ -40,8 +41,8 @@ public class TestApplication {
     FlowService flowService;
 
     @Test
+    @Transactional
     public void test() {
-
 
 
         Node nodeA = new Node();
@@ -58,6 +59,8 @@ public class TestApplication {
         conditionsB.setFieldName("fieldB");
         conditionsB.setReg("^[0-9]*$");
         ArrayList<Conditions> conditionsArrayList = new ArrayList<>();
+        conditionsArrayList.add(conditionsA);
+        conditionsArrayList.add(conditionsB);
         conditionsRepository.saveAll(conditionsArrayList);
 
         nodeB.setConditions(conditionsArrayList);
@@ -92,6 +95,14 @@ public class TestApplication {
         flowChainRepository.save(flowChain);
 
         Integer instanceId = flowService.startTask(flowChain.getId(), null);
+
+
+        try {
+            Thread.sleep(3000l);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+        flowService.activateTask(instanceId, null);
 
         try {
             Thread.sleep(52000L);
